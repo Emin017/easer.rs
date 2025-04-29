@@ -49,8 +49,7 @@ easer \
   [--body <BODY>] \
   --target-commitish <COMMITISH> \
   [--artifacts <PATH1>,<PATH2>,...] \
--  [--draft] [--prerelease] [--lang <LANG>]
-+  [--draft <true|false>] [--prerelease <true|false>] [--auto-gen-notes <true|false>] [--lang <LANG>]
+  [--draft] [--prerelease] [--auto-gen-notes] [--lang <LANG>]
 ```
 
 ## ⚙️ Parameters
@@ -66,11 +65,9 @@ easer \
 *   `--body <BODY>`: **[Optional]** Release description.
 *   `--target-commitish <COMMITISH>`: **[Required]** Branch or commit for the release.
 *   `--artifacts <PATH1>,<PATH2>,...`: **[Optional]** Comma‑separated list of asset file paths.
--*   `--draft`: **[Optional]** Mark as draft (default `false`).
--*   `--prerelease`: **[Optional]** Mark as pre‑release (default `false`).
-+*   `--draft <true|false>`: **[Optional]** Mark as draft (default `false`).
-+*   `--prerelease <true|false>`: **[Optional]** Mark as pre‑release (default `false`).
-+*   `--auto-gen-notes <true|false>`: **[Optional]** Automatic generation of release notes (default `false`).
+*   `--draft`: **[Optional]** Mark as draft (default `false`).
+*   `--prerelease`: **[Optional]** Mark as pre‑release (default `false`).
+*   `--auto-gen-notes`: **[Optional]** Automatic generation of release notes (default `false`).
 *   `--lang <LANG>`: **[Optional]** Output language: `zh-cn` (default) or `en-us`.
 ```
 

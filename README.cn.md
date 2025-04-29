@@ -49,8 +49,7 @@ easer \
   [--body <BODY>] \
   --target-commitish <COMMITISH> \
   [--artifacts <PATH1>,<PATH2>,...] \
--  [--draft] [--prerelease] [--lang <LANG>]
-+  [--draft <true|false>] [--prerelease <true|false>] [--auto-gen-notes <true|false>] [--lang <LANG>]
+  [--draft] [--prerelease] [--auto-gen-notes <true|false>] [--lang <LANG>]
 ```
 
 ## ⚙️ 参数详解
@@ -66,11 +65,9 @@ easer \
 *   `--body <BODY>`: **[可选]** Release 的描述，支持 Markdown。
 *   `--target-commitish <COMMITISH>`: **[必需]** Release 基于的分支或提交。
 *   `--artifacts <PATH1>,<PATH2>,...`: **[可选]** 要上传的附件路径列表，逗号分隔。
-- *   `--draft`: **[可选]** 将 Release 标记为草稿，默认为 `false`
-- *   `--prerelease`: **[可选]** 将 Release 标记为预发布，默认为 `false`
-+ *   `--draft <true|false>`: **[可选]** 将 Release 标记为草稿，默认为 `false`
-+ *   `--prerelease <true|false>`: **[可选]** 将 Release 标记为预发布，默认为 `false`
-+ *   `--auto-gen-notes <true|false>`: **[可选]** 自动生成发布说明，默认为 `false`
+*   `--draft`: **[可选]** 将 Release 标记为草稿，默认为 `false`
+*   `--prerelease`: **[可选]** 将 Release 标记为预发布，默认为 `false`
+*   `--auto-gen-notes`: **[可选]** 自动生成发布说明，默认为 `false`
 *   `--lang <LANG>`: **[可选]** 输出语言，支持 `zh-cn`（默认）和 `en-us`
 ```
 
