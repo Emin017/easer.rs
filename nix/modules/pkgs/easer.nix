@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage {
   version = "0.1.0";
 
   cargoLock = {
-    lockFile = ./../../Cargo.lock;
+    lockFile = ./../../../Cargo.lock;
   };
   src =
     with lib.fileset;

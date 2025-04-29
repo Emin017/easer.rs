@@ -1,7 +1,7 @@
 { pkgs, config, ... }:
 {
   devShells.default = pkgs.mkShell {
-    inputsFrom = [ config.easer ];
+    inputsFrom = [ config.packages.default ];
     buildInputs = with pkgs; [
       rust-analyzer
       rustfmt

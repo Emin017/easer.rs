@@ -5,7 +5,7 @@
 let
   self = {
     packages = {
-      easer = pkgs.callPackages ./easer.nix { };
+      easer = pkgs.callPackage ./easer.nix { };
       default = self.packages.easer;
     };
   };
