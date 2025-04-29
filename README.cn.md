@@ -1,4 +1,4 @@
-# 🚀 easer (Gitee Release CLI) 用户文档
+# 🚀 Easer (Gitee Release CLI) 用户文档
 
 [![English](https://img.shields.io/badge/lang-English-blue.svg)](README.en.md)
 [![中文](https://img.shields.io/badge/lang-中文-red.svg)](README.md)
