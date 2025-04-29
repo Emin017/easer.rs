@@ -49,25 +49,30 @@ easer \
   [--body <BODY>] \
   --target-commitish <COMMITISH> \
   [--artifacts <PATH1>,<PATH2>,...] \
-  [--draft] [--prerelease] [--lang <LANG>]
+-  [--draft] [--prerelease] [--lang <LANG>]
++  [--draft <true|false>] [--prerelease <true|false>] [--auto-gen-notes <true|false>] [--lang <LANG>]
 ```
 
 ## ⚙️ Parameters
 
+```markdown
 *   `--owner <OWNER>`: **[Required]** Repo owner (user or org).
 *   `--repo <REPO>`: **[Required]** Repository name.
 *   `--token <TOKEN>`: **[Required]** Gitee personal access token.
-*   `--repo-path <REPO_PATH>`: **[Optional]** Local path to Git repo, defaults to `.`. Used for commit history and changelog generation.
-*   `--previous-tag <PREV_TAG>`: **[Optional]** Last released tag for changelog. If omitted, the tool finds the latest tag automatically.
-*   `--tag-name <TAG>`: **[Optional]** Tag name for the new release (e.g. `v1.0.0`).
+*   `--repo-path <REPO_PATH>`: **[Optional]** Local path to Git repo, defaults to `.`.
+*   `--previous-tag <PREV_TAG>`: **[Optional]** Last released tag for changelog.
+*   `--tag-name <TAG>`: **[Optional]** Tag name for the new release.
 *   `--name <NAME>`: **[Optional]** Release title.
-*   `--body <BODY>`: **[Optional]** Release description (supports Markdown).
-*   —— If any of `--tag-name`/`--name`/`--body` is omitted, all are auto‑generated based on Conventional Commits.
-*   `--target-commitish <COMMITISH>`: **[Required]** Branch or commit for the release (e.g. `main`).
+*   `--body <BODY>`: **[Optional]** Release description.
+*   `--target-commitish <COMMITISH>`: **[Required]** Branch or commit for the release.
 *   `--artifacts <PATH1>,<PATH2>,...`: **[Optional]** Comma‑separated list of asset file paths.
-*   `--draft`: **[Optional]** Mark as draft (default `false`).
-*   `--prerelease`: **[Optional]** Mark as pre‑release (default `false`).
+-*   `--draft`: **[Optional]** Mark as draft (default `false`).
+-*   `--prerelease`: **[Optional]** Mark as pre‑release (default `false`).
++*   `--draft <true|false>`: **[Optional]** Mark as draft (default `false`).
++*   `--prerelease <true|false>`: **[Optional]** Mark as pre‑release (default `false`).
++*   `--auto-gen-notes <true|false>`: **[Optional]** Automatic generation of release notes (default `false`).
 *   `--lang <LANG>`: **[Optional]** Output language: `zh-cn` (default) or `en-us`.
+```
 
 ## 📝 Examples
 

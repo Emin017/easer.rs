@@ -49,25 +49,30 @@ easer \
   [--body <BODY>] \
   --target-commitish <COMMITISH> \
   [--artifacts <PATH1>,<PATH2>,...] \
-  [--draft] [--prerelease] [--lang <LANG>]
+-  [--draft] [--prerelease] [--lang <LANG>]
++  [--draft <true|false>] [--prerelease <true|false>] [--auto-gen-notes <true|false>] [--lang <LANG>]
 ```
 
 ## ⚙️ 参数详解
 
+```markdown
 *   `--owner <OWNER>`: **[必需]** 仓库所属的用户或组织名称
 *   `--repo <REPO>`: **[必需]** 仓库名称
 *   `--token <TOKEN>`: **[必需]** Gitee 个人访问令牌
-*   `--repo-path <REPO_PATH>`: **[可选]** 本地 Git 仓库路径，默认为当前目录（`.`）。用于读取提交和生成 CHANGELOG
-*   `--previous-tag <PREV_TAG>`: **[可选]** 上一个已发布的 tag，用于生成变更日志。如果不传，会自动查找最近的 tag
-*   `--tag-name <TAG>`: **[可选]** 要创建的 Release 的标签名称（如 `v1.0.0`）
-*   `--name <NAME>`: **[可选]** Release 的标题
-*   `--body <BODY>`: **[可选]** Release 的描述，支持 Markdown
-*   —— 当 `--tag-name`/`--name`/`--body` 任意一项不传时，工具会根据 Conventional Commits 规范自动生成对应信息
-*   `--target-commitish <COMMITISH>`: **[必需]** Release 基于的分支或提交（如 `main`）
-*   `--artifacts <PATH1>,<PATH2>,...`: **[可选]** 要上传的附件路径列表，逗号分隔
-*   `--draft`: **[可选]** 将 Release 标记为草稿，默认为 `false`
-*   `--prerelease`: **[可选]** 将 Release 标记为预发布，默认为 `false`
+*   `--repo-path <REPO_PATH>`: **[可选]** 本地 Git 仓库路径，默认为当前目录（`.`）。
+*   `--previous-tag <PREV_TAG>`: **[可选]** 上一个已发布的 tag，用于生成变更日志。
+*   `--tag-name <TAG>`: **[可选]** 要创建的 Release 的标签名称。
+*   `--name <NAME>`: **[可选]** Release 的标题。
+*   `--body <BODY>`: **[可选]** Release 的描述，支持 Markdown。
+*   `--target-commitish <COMMITISH>`: **[必需]** Release 基于的分支或提交。
+*   `--artifacts <PATH1>,<PATH2>,...`: **[可选]** 要上传的附件路径列表，逗号分隔。
+- *   `--draft`: **[可选]** 将 Release 标记为草稿，默认为 `false`
+- *   `--prerelease`: **[可选]** 将 Release 标记为预发布，默认为 `false`
++ *   `--draft <true|false>`: **[可选]** 将 Release 标记为草稿，默认为 `false`
++ *   `--prerelease <true|false>`: **[可选]** 将 Release 标记为预发布，默认为 `false`
++ *   `--auto-gen-notes <true|false>`: **[可选]** 自动生成发布说明，默认为 `false`
 *   `--lang <LANG>`: **[可选]** 输出语言，支持 `zh-cn`（默认）和 `en-us`
+```
 
 ## 📝 示例
 
