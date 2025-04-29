@@ -29,4 +29,10 @@ pub struct Args {
     pub lang: String,
     #[clap(long, help = "Paths to asset files to upload", value_delimiter = ',')]
     pub artifacts: Option<Vec<String>>,
+    #[clap(
+        long,
+        default_value = "false",
+        help = "Is automatic generation of release notes"
+    )]
+    pub auto_gen_notes: bool,
 }

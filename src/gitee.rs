@@ -65,21 +65,33 @@ impl<'a> Messages<'a> {
 
 pub async fn create_release(args: Args, api_base_url: Option<&str>) -> Result<(), Box<dyn Error>> {
     let messages = Messages::new(&args.lang);
-    // Determine release info: auto-generate if no tag_name provided
-    let (tag_name, release_name, release_body) = if args.tag_name.is_none() {
+
+    let tag_name: String;
+    let release_name: String;
+    let release_body: String;
+
+    if args.auto_gen_notes {
+        info!("Auto-generating release notes...");
         let info = generate_release_info(
             &args.repo_path,
             args.previous_tag.as_ref(),
             &args.target_commitish,
+            args.tag_name.as_deref(),
         )?;
-        (info.tag_name, info.name, info.body)
+        tag_name = info.tag_name;
+        release_name = info.name;
+        release_body = info.body;
     } else {
-        (
-            args.tag_name.clone().unwrap(),
-            args.name.clone().unwrap(),
-            args.body.clone().unwrap(),
-        )
-    };
+        tag_name = args.tag_name.clone().unwrap_or_default();
+        release_name = args.name.clone().unwrap_or_default();
+        release_body = args.body.clone().unwrap_or_default();
+        [&tag_name, &release_name, &release_body]
+            .iter()
+            .filter(|s| s.is_empty())
+            .for_each(|_| {
+                error!("Tag name, release name, and body cannot be empty");
+            });
+    }
 
     let tag_name_to_parse = tag_name.strip_prefix('v').unwrap_or(&tag_name);
     if Version::parse(tag_name_to_parse).is_err() {
@@ -87,6 +99,7 @@ pub async fn create_release(args: Args, api_base_url: Option<&str>) -> Result<()
         error!("{}", err_msg);
         return Err(err_msg.into());
     }
+
     let release = Release {
         tag_name: tag_name.clone(),
         target_commitish: args.target_commitish.clone(),
@@ -273,6 +286,7 @@ mod tests {
             prerelease: false,
             lang: "zh-cn".to_string(),
             artifacts: None,
+            auto_gen_notes: false,
         }
     }
 
