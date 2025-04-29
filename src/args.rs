@@ -1,6 +1,6 @@
 use clap::Parser;
 
-#[derive(Parser, Debug)] // 添加 Debug trait 以便在 main 中打印
+#[derive(Parser, Debug, Clone)]
 #[clap(about = "Gitee release CLI tool for creating releases")]
 pub struct Args {
     #[clap(long, help = "Repository owner")]
@@ -9,14 +9,18 @@ pub struct Args {
     pub repo: String,
     #[clap(long, help = "Gitee personal access token")]
     pub token: String,
-    #[clap(long, help = "Tag name (e.g., v1.0.0)")]
-    pub tag_name: String,
+    #[clap(long, default_value = ".", help = "Path to repository to analyze")]
+    pub repo_path: String,
+    #[clap(long, help = "Previous tag to start analysis from")]
+    pub previous_tag: Option<String>,
+    #[clap(long, help = "Tag name (e.g., v1.0.0), optional for auto-generation")]
+    pub tag_name: Option<String>,
+    #[clap(long, help = "Release name, optional for auto-generation")]
+    pub name: Option<String>,
+    #[clap(long, help = "Release description, optional for auto-generation")]
+    pub body: Option<String>,
     #[clap(long, help = "Target commit or branch (e.g., main)")]
     pub target_commitish: String,
-    #[clap(long, help = "Release name")]
-    pub name: String,
-    #[clap(long, help = "Release description")]
-    pub body: String,
     #[clap(long, default_value = "false", help = "Is draft release")]
     pub draft: bool,
     #[clap(long, default_value = "false", help = "Is prerelease")]

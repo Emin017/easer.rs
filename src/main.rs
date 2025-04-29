@@ -1,4 +1,5 @@
 mod args;
+mod conventional;
 mod gitee;
 
 use args::Args;
@@ -22,4 +23,3 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-

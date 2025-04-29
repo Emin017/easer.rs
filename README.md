@@ -22,7 +22,7 @@ This is a command-line tool designed to create Releases in a specified Gitee rep
 If you have Rust and Cargo installed on your system, you can install it using the following command:
 
 ```bash
-cargo install --git https://github.com/Emin017/easer.rs # Please replace with the actual repository URL
+cargo install --git https://github.com/Emin017/easer.rs
 ```
 
 Alternatively, clone this repository and run the following command in the project root directory:
@@ -38,53 +38,63 @@ Visit the Releases page of this project (if available), download the pre-compile
 ## ▶️ Usage
 
 ```bash
-easer --owner <OWNER> --repo <REPO> --token <TOKEN> --tag-name <TAG> --target-commitish <COMMITISH> --name <NAME> --body <BODY> [--artifacts <PATH1>,<PATH2>,...] [OPTIONS]
+easer \
+  --owner <OWNER> \
+  --repo <REPO> \
+  --token <TOKEN> \
+  [--repo-path <REPO_PATH>] \
+  [--previous-tag <PREV_TAG>] \
+  [--tag-name <TAG>] \
+  [--name <NAME>] \
+  [--body <BODY>] \
+  --target-commitish <COMMITISH> \
+  [--artifacts <PATH1>,<PATH2>,...] \
+  [--draft] [--prerelease] [--lang <LANG>]
 ```
 
-## ⚙️ Parameter Details
+## ⚙️ Parameters
 
-*   `--owner <OWNER>`: **[Required]** The username or organization name that owns the repository.
-*   `--repo <REPO>`: **[Required]** The name of the repository.
-*   `--token <TOKEN>`: **[Required]** Your Gitee Personal Access Token. Requires permission to create Releases. Visit [Gitee Settings](https://gitee.com/profile/personal_access_tokens) to generate a token.
-*   `--tag-name <TAG>`: **[Required]** The tag name for the Release to be created. It is recommended to follow semantic versioning (e.g., `v1.0.0`, `1.0.0`). The tool will attempt to validate its format.
-*   `--target-commitish <COMMITISH>`: **[Required]** The Git commit SHA, branch name, or tag name the Release is based on (e.g., `main`, `master`, `develop`, `commit-sha`).
-*   `--name <NAME>`: **[Required]** The title or name of the Release.
-*   `--body <BODY>`: **[Required]** The detailed description of the Release. Supports Markdown format.
-*   `--artifacts <PATH1>,<PATH2>,...`: **[Optional]** A comma-separated list of paths to the asset files to upload. Example: `--artifacts build.zip,checksums.txt`.
-*   `--draft`: **[Optional]** Mark this Release as a draft. Draft Releases are not public and are only visible to repository members. Defaults to `false`.
-*   `--prerelease`: **[Optional]** Mark this Release as a pre-release. Typically used for beta or release candidate versions. Defaults to `false`.
-*   `--lang <LANG>`: **[Optional]** Set the language for the tool's output messages. Supports `zh-cn` (Simplified Chinese, default) and `en-us` (US English).
+*   `--owner <OWNER>`: **[Required]** Repo owner (user or org).
+*   `--repo <REPO>`: **[Required]** Repository name.
+*   `--token <TOKEN>`: **[Required]** Gitee personal access token.
+*   `--repo-path <REPO_PATH>`: **[Optional]** Local path to Git repo, defaults to `.`. Used for commit history and changelog generation.
+*   `--previous-tag <PREV_TAG>`: **[Optional]** Last released tag for changelog. If omitted, the tool finds the latest tag automatically.
+*   `--tag-name <TAG>`: **[Optional]** Tag name for the new release (e.g. `v1.0.0`).
+*   `--name <NAME>`: **[Optional]** Release title.
+*   `--body <BODY>`: **[Optional]** Release description (supports Markdown).
+*   —— If any of `--tag-name`/`--name`/`--body` is omitted, all are auto‑generated based on Conventional Commits.
+*   `--target-commitish <COMMITISH>`: **[Required]** Branch or commit for the release (e.g. `main`).
+*   `--artifacts <PATH1>,<PATH2>,...`: **[Optional]** Comma‑separated list of asset file paths.
+*   `--draft`: **[Optional]** Mark as draft (default `false`).
+*   `--prerelease`: **[Optional]** Mark as pre‑release (default `false`).
+*   `--lang <LANG>`: **[Optional]** Output language: `zh-cn` (default) or `en-us`.
 
 ## 📝 Examples
 
-Create a formal Release named "v1.0.0 Release" with the tag `v1.0.0`, based on the `main` branch, include a description, and upload two artifacts:
-
+# 1. Auto‑generate release info and upload one artifact
 ```bash
 easer \
-    --owner "my-username" \
-    --repo "my-awesome-project" \
-    --token "YOUR_GITEE_TOKEN" \
-    --tag-name "v1.0.0" \
-    --target-commitish "main" \
-    --name "v1.0.0 Release" \
-    --body "This is the first stable release of our project!\n\nIncludes the following updates:\n- Feature A\n- Fix B" \
-    --artifacts "./dist/my-app-linux.tar.gz,./dist/my-app-windows.zip"
+  --owner "my-username" \
+  --repo "my-project" \
+  --token "TOKEN" \
+  --repo-path "./" \
+  --previous-tag "v0.1.0" \
+  --target-commitish "main" \
+  --artifacts "./dist/app.tar.gz"
 ```
 
-Create a pre-release draft Release and use English messages:
-
+# 2. Provide full metadata and upload multiple artifacts
 ```bash
 easer \
-    --owner "my-org" \
-    --repo "beta-test" \
-    --token "YOUR_GITEE_TOKEN" \
-    --tag-name "v0.1.0-beta.1" \
-    --target-commitish "develop" \
-    --name "Beta Release 1" \
-    --body "This is a beta release for testing purposes." \
-    --draft \
-    --prerelease \
-    --lang "en-us"
+  --owner "my-org" \
+  --repo "beta-test" \
+  --token "TOKEN" \
+  --tag-name "v1.2.0" \
+  --name "Release v1.2.0" \
+  --body "This update includes x, y, z." \
+  --target-commitish "develop" \
+  --artifacts "./build.zip,./checksums.txt" \
+  --lang "en-us"
 ```
 
 ## ⚠️ Important Notes

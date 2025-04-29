@@ -1,4 +1,5 @@
 use crate::args::Args;
+use crate::conventional::generate_release_info;
 use reqwest::{header, multipart};
 use semver::Version;
 use serde::{Deserialize, Serialize};
@@ -47,7 +48,8 @@ impl<'a> Messages<'a> {
                 upload_failure: "Failed to upload artifact",
                 file_read_error: "Failed to read artifact file",
             },
-            _ => Messages { // Default to zh-cn
+            _ => Messages {
+                // Default to zh-cn
                 invalid_tag: "无效的语义化版本标签名称",
                 success: "版本发布成功创建",
                 failure: "创建版本发布失败",
@@ -61,21 +63,35 @@ impl<'a> Messages<'a> {
     }
 }
 
-
 pub async fn create_release(args: Args, api_base_url: Option<&str>) -> Result<(), Box<dyn Error>> {
     let messages = Messages::new(&args.lang);
+    // Determine release info: auto-generate if no tag_name provided
+    let (tag_name, release_name, release_body) = if args.tag_name.is_none() {
+        let info = generate_release_info(
+            &args.repo_path,
+            args.previous_tag.as_ref(),
+            &args.target_commitish,
+        )?;
+        (info.tag_name, info.name, info.body)
+    } else {
+        (
+            args.tag_name.clone().unwrap(),
+            args.name.clone().unwrap(),
+            args.body.clone().unwrap(),
+        )
+    };
 
-    let tag_name_to_parse = args.tag_name.strip_prefix('v').unwrap_or(&args.tag_name);
+    let tag_name_to_parse = tag_name.strip_prefix('v').unwrap_or(&tag_name);
     if Version::parse(tag_name_to_parse).is_err() {
-        let err_msg = format!("{}: {}", messages.invalid_tag, args.tag_name);
+        let err_msg = format!("{}: {}", messages.invalid_tag, tag_name);
         error!("{}", err_msg);
         return Err(err_msg.into());
     }
     let release = Release {
-        tag_name: args.tag_name.clone(),
+        tag_name: tag_name.clone(),
         target_commitish: args.target_commitish.clone(),
-        name: args.name.clone(),
-        body: args.body.clone(),
+        name: release_name.clone(),
+        body: release_body.clone(),
         draft: args.draft,
         prerelease: args.prerelease,
     };
@@ -143,7 +159,10 @@ pub async fn create_release(args: Args, api_base_url: Option<&str>) -> Result<()
                 let file_content = match fs::read(&artifact_path).await {
                     Ok(content) => content,
                     Err(e) => {
-                        error!("{}: {} - {}", messages.file_read_error, artifact_path_str, e);
+                        error!(
+                            "{}: {} - {}",
+                            messages.file_read_error, artifact_path_str, e
+                        );
                         continue;
                     }
                 };
@@ -244,10 +263,12 @@ mod tests {
             owner: "test_owner".to_string(),
             repo: "test_repo".to_string(),
             token: "test_token".to_string(),
-            tag_name: "v1.0.0".to_string(),
+            repo_path: ".".to_string(),
+            previous_tag: None,
+            tag_name: Some("v1.0.0".to_string()),
+            name: Some("Test Release".to_string()),
+            body: Some("This is a test release.".to_string()),
             target_commitish: "main".to_string(),
-            name: "Test Release".to_string(),
-            body: "This is a test release.".to_string(),
             draft: false,
             prerelease: false,
             lang: "zh-cn".to_string(),
@@ -281,8 +302,14 @@ mod tests {
         let dir = tempdir().unwrap();
         let file_path1 = dir.path().join("artifact1.zip");
         let file_path2 = dir.path().join("artifact2.txt");
-        File::create(&file_path1).unwrap().write_all(b"zip content").unwrap();
-        File::create(&file_path2).unwrap().write_all(b"text content").unwrap();
+        File::create(&file_path1)
+            .unwrap()
+            .write_all(b"zip content")
+            .unwrap();
+        File::create(&file_path2)
+            .unwrap()
+            .write_all(b"text content")
+            .unwrap();
 
         let args = Args {
             artifacts: Some(vec![
@@ -294,13 +321,14 @@ mod tests {
         let release_api_path = format!("/api/v5/repos/{}/{}/releases", args.owner, args.repo);
         let release_id = 123;
 
+        let tag = args.tag_name.clone().unwrap();
         let release_mock = server
             .mock("POST", release_api_path.as_str())
             .with_status(201)
             .with_header("content-type", "application/json")
             .with_body(format!(
                 r#"{{"id": {}, "tag_name": "{}", "html_url": "http://example.com/release/{}"}}"#,
-                release_id, args.tag_name, args.tag_name
+                release_id, tag, tag
             ))
             .create_async()
             .await;
@@ -385,7 +413,7 @@ mod tests {
     #[tokio::test]
     async fn test_create_release_invalid_tag() {
         let args = Args {
-            tag_name: "invalid-tag".to_string(),
+            tag_name: Some("invalid-tag".to_string()),
             ..default_args()
         };
 
@@ -398,7 +426,7 @@ mod tests {
             .contains("无效的语义化版本标签名称: invalid-tag"));
     }
 
-     #[tokio::test]
+    #[tokio::test]
     async fn test_create_release_success_en_us() {
         let mut server = Server::new_async().await;
         let args = Args {

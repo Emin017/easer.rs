@@ -17,12 +17,12 @@
 
 ## 🛠️ 安装
 
-### 📦 使用 Cargo (推荐)
+### 📦 使用 Cargo （推荐）
 
 如果你的系统安装了 Rust 和 Cargo，可以通过以下命令安装：
 
 ```bash
-cargo install --git https://github.com/Emin017/easer.rs # 请替换为实际的仓库地址
+cargo install --git https://github.com/Emin017/easer.rs
 ```
 
 或者，克隆本仓库后在项目根目录运行：
@@ -38,53 +38,63 @@ cargo install --path .
 ## ▶️ 用法
 
 ```bash
-easer --owner <OWNER> --repo <REPO> --token <TOKEN> --tag-name <TAG> --target-commitish <COMMITISH> --name <NAME> --body <BODY> [--artifacts <PATH1>,<PATH2>,...] [OPTIONS]
+easer \
+  --owner <OWNER> \
+  --repo <REPO> \
+  --token <TOKEN> \
+  [--repo-path <REPO_PATH>] \
+  [--previous-tag <PREV_TAG>] \
+  [--tag-name <TAG>] \
+  [--name <NAME>] \
+  [--body <BODY>] \
+  --target-commitish <COMMITISH> \
+  [--artifacts <PATH1>,<PATH2>,...] \
+  [--draft] [--prerelease] [--lang <LANG>]
 ```
 
 ## ⚙️ 参数详解
 
-*   `--owner <OWNER>`: **[必需]** 仓库所属的用户或组织名称。
-*   `--repo <REPO>`: **[必需]** 仓库名称。
-*   `--token <TOKEN>`: **[必需]** 你的 Gitee 个人访问令牌。需要有创建 Release 的权限。请访问 [Gitee 设置](https://gitee.com/profile/personal_access_tokens) 生成令牌。
-*   `--tag-name <TAG>`: **[必需]** 要创建的 Release 的标签名称。建议遵循语义化版本规范（例如 `v1.0.0`, `1.0.0`）。工具会尝试验证其格式。
-*   `--target-commitish <COMMITISH>`: **[必需]** Release 基于的 Git Commit SHA、分支名或标签名（例如 `main`, `master`, `develop`, `commit-sha`）。
-*   `--name <NAME>`: **[必需]** Release 的标题或名称。
-*   `--body <BODY>`: **[必需]** Release 的详细描述。支持 Markdown 格式。
-*   `--artifacts <PATH1>,<PATH2>,...`: **[可选]** 要上传的附件文件的路径列表，以逗号分隔。例如 `--artifacts build.zip,checksums.txt`。
-*   `--draft`: **[可选]** 将此 Release 标记为草稿。草稿 Release 不会公开，只有仓库成员可见。默认为 `false`。
-*   `--prerelease`: **[可选]** 将此 Release 标记为预发布版本。通常用于测试版或候选版本。默认为 `false`。
-*   `--lang <LANG>`: **[可选]** 设置工具输出消息的语言。支持 `zh-cn` (简体中文，默认) 和 `en-us` (美国英语)。
+*   `--owner <OWNER>`: **[必需]** 仓库所属的用户或组织名称
+*   `--repo <REPO>`: **[必需]** 仓库名称
+*   `--token <TOKEN>`: **[必需]** Gitee 个人访问令牌
+*   `--repo-path <REPO_PATH>`: **[可选]** 本地 Git 仓库路径，默认为当前目录（`.`）。用于读取提交和生成 CHANGELOG
+*   `--previous-tag <PREV_TAG>`: **[可选]** 上一个已发布的 tag，用于生成变更日志。如果不传，会自动查找最近的 tag
+*   `--tag-name <TAG>`: **[可选]** 要创建的 Release 的标签名称（如 `v1.0.0`）
+*   `--name <NAME>`: **[可选]** Release 的标题
+*   `--body <BODY>`: **[可选]** Release 的描述，支持 Markdown
+*   —— 当 `--tag-name`/`--name`/`--body` 任意一项不传时，工具会根据 Conventional Commits 规范自动生成对应信息
+*   `--target-commitish <COMMITISH>`: **[必需]** Release 基于的分支或提交（如 `main`）
+*   `--artifacts <PATH1>,<PATH2>,...`: **[可选]** 要上传的附件路径列表，逗号分隔
+*   `--draft`: **[可选]** 将 Release 标记为草稿，默认为 `false`
+*   `--prerelease`: **[可选]** 将 Release 标记为预发布，默认为 `false`
+*   `--lang <LANG>`: **[可选]** 输出语言，支持 `zh-cn`（默认）和 `en-us`
 
 ## 📝 示例
 
-创建一个名为 "v1.0.0 Release" 的正式 Release，标签为 `v1.0.0`，基于 `main` 分支，附带描述，并上传两个附件：
-
+# 1. 指定本地仓库、自动生成发布信息并上传 artifact
 ```bash
 easer \
-    --owner "my-username" \
-    --repo "my-awesome-project" \
-    --token "YOUR_GITEE_TOKEN" \
-    --tag-name "v1.0.0" \
-    --target-commitish "main" \
-    --name "v1.0.0 Release" \
-    --body "这是我们项目的第一个稳定版本！\n\n包含以下更新：\n- 功能 A\n- 修复 B" \
-    --artifacts "./dist/my-app-linux.tar.gz,./dist/my-app-windows.zip"
+  --owner "my-username" \
+  --repo "my-project" \
+  --token "TOKEN" \
+  --repo-path "./" \
+  --previous-tag "v0.1.0" \
+  --target-commitish "main" \
+  --artifacts "./dist/app.tar.gz"
 ```
 
-创建一个预发布的草稿 Release，并使用英文消息：
-
+# 2. 指定所有信息并上传多个 artifact
 ```bash
 easer \
-    --owner "my-org" \
-    --repo "beta-test" \
-    --token "YOUR_GITEE_TOKEN" \
-    --tag-name "v0.1.0-beta.1" \
-    --target-commitish "develop" \
-    --name "Beta Release 1" \
-    --body "This is a beta release for testing purposes." \
-    --draft \
-    --prerelease \
-    --lang "en-us"
+  --owner "my-org" \
+  --repo "beta-test" \
+  --token "TOKEN" \
+  --tag-name "v1.2.0" \
+  --name "Release v1.2.0" \
+  --body "本次更新包含 x、y、z。" \
+  --target-commitish "develop" \
+  --artifacts "./build.zip,./checksums.txt" \
+  --lang "en-us"
 ```
 
 ## ⚠️ 注意事项
